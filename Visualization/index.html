@@ -3,15 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 </head>
 
 <style>
+        
+        body, * {
+            background-color: #bfb3b2;
+
+        }
         #viz {
             position: fixed;
             align-items: center;
             margin-left: 50px;
             margin-top: 60px; 
+            background-color: #bfb3b2;
 
+
+        }
+
+        #title {
+            position: relative;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 35px;
+            color:	#f2f2f2;
+            text-transform:capitalize;
+            align-content: center;
+            justify-content: center;
+        }
+
+        #subTitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 25px;
+            color: #f2f2f2;
+            text-transform: capitalize;
+        }
+
+        .link{
+            text-decoration:none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            color: #f2f2f2;
+            background-color: #bfb3b2;
+            border-color:none;
+            margin: 10px;
+            justify-content: right;
+            text-anchor: end;
+            box-shadow: none;
+            border-radius: 8px;
+        }
+
+        #R1 .link {
+            text-decoration: none;
+            border: none;
+            box-shadow: none;
+        } 
+
+        .link:hover {
+            cursor: pointer;
+            color: #cb181d;
         }
     </style>
 
@@ -22,7 +72,7 @@
         <input type="button" class="link" id="R1" value="First Impression Roses">
         <input type="button" class="link" id="D1" value="One-on-One Dates">
     </div>
-
+    
     <svg id="viz" width="960" height="500">
     </svg>
 
@@ -67,7 +117,7 @@
     parentContainer.appendChild(subTitle);
     parentContainer.appendChild(r1Div);
     parentContainer.appendChild(d1Div);
-    title.innerHTML = "Can successful Bachelor and Bachelorette Contestants Be Predicted?";
+    title.innerHTML = "Can the Success of <br> Bachelor and Bachelorette <br> Contestants Be Predicted?";
     subTitle.innerHTML = "The significance of first impression roses and one-on-one dates";
 
     
@@ -80,7 +130,7 @@
     console.log("loaded cleanupContent");
     
     function show1() {
-        cleanupContent();
+        //show1cleanupContent();
         parentContainer.appendChild(title);
         title.innerHTML = "First Impression Roses"
         // parentContainer.appendChild(svg);
@@ -100,7 +150,7 @@
         return d;
     }, function (error, data) {
         if (error) throw error;
-
+        
         var keys = data.columns.slice(1);
         console.log(keys)
 
@@ -110,8 +160,8 @@
 
          var colorSet = -1;
 
-         g.append("g")
-         .selectAll("g")
+         g.selectAll("g")
+         .append("g")
          .data(data)
          .enter().append("g")
             .attr("transform", function(d) {return "translate(" + x0(d.Show) + ",0)"; })
@@ -141,7 +191,7 @@
             .attr("font-weight", "bold")
             .attr("text-anchor", "start")
             .text("# of Contestants");
-        
+            
         var legend = g.append("g")
             .attr("font-family", "sans-serif")
             .attr("font-size", 10)
@@ -165,9 +215,10 @@
     });
 
     } 
-    console.log("loaded show1"),
+    console.log("loaded show1");
     
     function show2() {
+        console.log('test');
         cleanupContent();
         // parentContainer.appendchild(svg);
     d3.csv("../Data/OOD.csv", function(d, columns, i) {
@@ -228,8 +279,8 @@
             .text("# of Contestants");
         
         var legend = g.append("g")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", 10)
+            .attr("font-family", "Montserrat")
+            .attr("font-size", 15)
             .attr("text-anchor", "end")
             .selectAll("g")
             .data(keys.slice().reverse())
