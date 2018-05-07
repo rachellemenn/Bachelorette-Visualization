@@ -8,6 +8,10 @@
     <svg id="viz" width="960" height="500">
     </svg>
     <script>
+    
+    var animateDuration = 700;
+    var animateDelay = 30;
+
     var svg = d3.select("#viz"),
         margin = {top: 20, right: 20, bottom: 30, left: 40},
         width = +svg.attr("width") - margin.left - margin.right,
@@ -89,6 +93,24 @@
             .attr("dy", "0.32em")
             .text(function(d) { return d; });
     });
+
+      svg.transition()
+            .delay(function(d, i) { return i * 10; })
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return y(d[0]) - y(d[1]); });
+
+    // svg.transition()
+    //     .attr('height', function(d){
+    //         return x0(d);
+    //     })
+    //     .attr('y', function(d) {
+    //         return height - x0(d)
+    //     })
+    //     .duration(animateDuration)
+    //     .delay(function(d, i){
+    //         return i * animateDelay
+    //     })
+        // .ease('elastic')
 
     </script>
 </body>
