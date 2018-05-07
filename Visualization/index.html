@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
-<body>
-    <style>
+
+<style>
         #viz {
             position: fixed;
             align-items: center;
@@ -14,10 +14,21 @@
 
         }
     </style>
+
+<body>
+    <div id ="title"></div>
+    <div id = "subTitle"></div>
+    <div id="select">
+        <input type="button" class="link" id="R1" value="First Impression Roses">
+        <input type="button" class="link" id="D1" value="One-on-One Dates">
+    </div>
+
     <svg id="viz" width="960" height="500">
     </svg>
+
     <script>
-    var svg = d3.select("#viz"),
+
+    var svg = d3.select("#viz"), 
         margin = {top:20, right: 20, bottom: 30, left: 40},
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom,
@@ -29,15 +40,48 @@
         .padding(0.05);
     var y = d3.scaleLinear()
         .rangeRound([height, 0]);
-    // var z = d3.scaleOrdinal()
-    //     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
     var z = [
     d3.scaleOrdinal()
-    .range(['#fee5d9','#fcae91','#fb6a4a','#cb181d']),
+    .range(['#cb181d','#fb6a4a','#fcae91', '#fee5d9']),
     d3.scaleOrdinal()
-    .range(['#f1eef6','#d7b5d8','#df65b0','#ce1256'])
+    .range(['#ce1256','#df65b0', '#d7b5d8', '#f1eef6'])
     ];
     
+    var r1Div = document.getElementById("R1");
+    var d1Div = document.getElementById("D1");
+
+    console.log(r1Div);
+    console.log(d1Div);
+
+    var title = document.getElementById("title");
+    var subTitle = document.getElementById("subTitle");
+    var parentContainer = title.parentElement;
+    
+    console.log(title);
+    console.log(parentContainer);
+
+
+    //initialise home screen
+    cleanupContent();
+    parentContainer.appendChild(title);
+    parentContainer.appendChild(r1Div);
+    parentContainer.appendChild(d1Div);
+    title.innerHTML = "Can successful Bachelor and Bachelorette Contestants Be Predicted?";
+    subTitle.innerHTML = "The significance of first impression roses and one-on-one dates";
+
+    
+    function cleanupContent() {
+        while (parentContainer.children.length >1) {
+            parentContainer.removeChild (parentContainer.children[1]);
+        }
+    }
+
+    console.log("loaded cleanupContent");
+    
+    function show1() {
+        cleanupContent();
+        parentContainer.appendChild(svg);
+        svg.innerHTML = 
     d3.csv("../Data/FIR2.csv", function(d, columns, i) {
         for (var key in d)
         {
@@ -53,7 +97,6 @@
         return d;
     }, function (error, data) {
         if (error) throw error;
-
 
         var keys = data.columns.slice(1);
         console.log(keys)
@@ -118,6 +161,99 @@
             .text(function(d) { return d; });
     });
 
-    </script>
+    } 
+    console.log("loaded show1"),
+    
+    function show2() {
+        cleanupContent();
+        parentContainer.appendchild(svg);
+    d3.csv("../Data/OOD.csv", function(d, columns, i) {
+        for (var key in d)
+        {
+            if (d.hasOwnProperty(key))
+            {
+                var value = +d[key];
+                if (!isNaN(value))
+                {
+                    d[key] = value;
+                }
+            }
+        }
+        return d;
+    }, function (error, data) {
+        if (error) throw error;
+
+        var keys = data.columns.slice(1);
+        console.log(keys)
+
+         x0.domain(data.map(function(d) {return d.Show;}));
+         x1.domain(keys).rangeRound([0, x0.bandwidth()]);
+         y.domain([0, d3.max(data, function(d) {return d3.max(keys, function(key) {return d[key]; });})]).nice();
+
+         var colorSet = -1;
+
+         g.append("g")
+         .selectAll("g")
+         .data(data)
+         .enter().append("g")
+            .attr("transform", function(d) {return "translate(" + x0(d.Show) + ",0)"; })
+        .selectAll("rect")
+        .data(function(d) { return keys.map(function(key) { return {key: key, value: d[key]}; }); })
+        .enter().append("rect")
+            .attr("x", function(d) {return x1(d.key); })
+            //ifkey=thatlocation is that otherwise location is that
+            .attr("y", function(d) {return y(d.value); })
+            .attr("width", x1.bandwidth())
+            .attr("height", function(d) {return height - y(d.value); })
+            .attr("fill", function(d) {console.log(d); if (d.key == "Total") colorSet++; return z[colorSet](d.key);});
+        
+        g.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," +height + ")")
+            .call(d3.axisBottom(x0));
+
+        g.append("g")
+            .attr("class", "axis")
+            .call(d3.axisLeft(y).ticks(null, "s"))
+        .append("text")
+            .attr("x", 2)
+            .attr("y", y(y.ticks().pop()) + 0.5)
+            .attr("dy", "0.32em")
+            .attr("fill", "#000")
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "start")
+            .text("# of Contestants");
+        
+        var legend = g.append("g")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 10)
+            .attr("text-anchor", "end")
+            .selectAll("g")
+            .data(keys.slice().reverse())
+            .enter().append("g")
+            .attr("transform", function(d, i) { return "translate(0," + i * 20 +")"; });
+        
+        legend.append("rect")
+            .attr("x", width - 19)
+            .attr("width", 19)
+            .attr("height", 19)
+            .attr("fill", function(d) {console.log(d); if (d.key == "Total") colorSet++; return z[colorSet](d.key);});
+
+        legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9.5)
+            .attr("dy", "0.32em")
+            .text(function(d) { return d; });
+    });
+    }
+    console.log("loaded show2"),
+
+    
+    console.log("adding click listener for data"),
+
+    r1Div.addEventListener("click", show1),
+    d1Div.addEventListener("click", show2);
+
+</script>
 </body>    
 </html>
