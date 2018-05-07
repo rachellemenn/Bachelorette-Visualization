@@ -64,6 +64,7 @@
     //initialise home screen
     cleanupContent();
     parentContainer.appendChild(title);
+    parentContainer.appendChild(subTitle);
     parentContainer.appendChild(r1Div);
     parentContainer.appendChild(d1Div);
     title.innerHTML = "Can successful Bachelor and Bachelorette Contestants Be Predicted?";
@@ -80,8 +81,10 @@
     
     function show1() {
         cleanupContent();
-        parentContainer.appendChild(svg);
-        svg.innerHTML = 
+        parentContainer.appendChild(title);
+        title.innerHTML = "First Impression Roses"
+        // parentContainer.appendChild(svg);
+        // svg.innerHTML = 
     d3.csv("../Data/FIR2.csv", function(d, columns, i) {
         for (var key in d)
         {
@@ -166,7 +169,7 @@
     
     function show2() {
         cleanupContent();
-        parentContainer.appendchild(svg);
+        // parentContainer.appendchild(svg);
     d3.csv("../Data/OOD.csv", function(d, columns, i) {
         for (var key in d)
         {
