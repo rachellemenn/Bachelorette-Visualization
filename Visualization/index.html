@@ -42,7 +42,7 @@
         var keys = data.columns.slice(1);
 
          x0.domain(data.map(function(d) {return d.Show;}));
-         x1.domain(keys).rangeRound([0, x0.badnwidth()]);
+         x1.domain(keys).rangeRound([0, x0.bandwidth()]);
          y.domain([0, d3.max(data, function(d) {return d3.max(keys, function(key) {return d[key]; });})]).nice();
 
          g.append("g")
