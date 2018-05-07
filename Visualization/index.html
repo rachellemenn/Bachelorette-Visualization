@@ -5,6 +5,15 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
 <body>
+    <style>
+        #viz {
+            position: fixed;
+            align-items: center;
+            margin-left: 50px;
+            margin-top: 60px; 
+
+        }
+    </style>
     <svg id="viz" width="960" height="500">
     </svg>
     <script>
@@ -20,10 +29,16 @@
         .padding(0.05);
     var y = d3.scaleLinear()
         .rangeRound([height, 0]);
-    var z = d3.scaleOrdinal()
-        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    // var z = d3.scaleOrdinal()
+    //     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    var z = [
+    d3.scaleOrdinal()
+    .range(['#fee5d9','#fcae91','#fb6a4a','#cb181d']),
+    d3.scaleOrdinal()
+    .range(['#f1eef6','#d7b5d8','#df65b0','#ce1256'])
+    ];
     
-    d3.csv("../Data/FIR.csv", function(d, columns, i) {
+    d3.csv("../Data/FIR2.csv", function(d, columns, i) {
         for (var key in d)
         {
             if (d.hasOwnProperty(key))
@@ -39,11 +54,15 @@
     }, function (error, data) {
         if (error) throw error;
 
+
         var keys = data.columns.slice(1);
+        console.log(keys)
 
          x0.domain(data.map(function(d) {return d.Show;}));
          x1.domain(keys).rangeRound([0, x0.bandwidth()]);
          y.domain([0, d3.max(data, function(d) {return d3.max(keys, function(key) {return d[key]; });})]).nice();
+
+         var colorSet = -1;
 
          g.append("g")
          .selectAll("g")
@@ -58,7 +77,7 @@
             .attr("y", function(d) {return y(d.value); })
             .attr("width", x1.bandwidth())
             .attr("height", function(d) {return height - y(d.value); })
-            .attr("fill", function(d) { return z(d.key); });
+            .attr("fill", function(d) {console.log(d); if (d.key == "Total") colorSet++; return z[colorSet](d.key);});
         
         g.append("g")
             .attr("class", "axis")
@@ -90,7 +109,7 @@
             .attr("x", width - 19)
             .attr("width", 19)
             .attr("height", 19)
-            .attr("fill", z);
+            .attr("fill", function(d) {console.log(d); if (d.key == "Total") colorSet++; return z[colorSet](d.key);});
 
         legend.append("text")
             .attr("x", width - 24)
