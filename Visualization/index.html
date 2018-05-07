@@ -54,6 +54,7 @@
         .data(function(d) { return keys.map(function(key) { return {key: key, value: d[key]}; }); })
         .enter().append("rect")
             .attr("x", function(d) {return x1(d.key); })
+            //ifkey=thatlocation is that otherwise location is that
             .attr("y", function(d) {return y(d.value); })
             .attr("width", x1.bandwidth())
             .attr("height", function(d) {return height - y(d.value); })
@@ -61,7 +62,7 @@
         
         g.append("g")
             .attr("class", "axis")
-            .attr("transform", "translate(0" +height + ")")
+            .attr("transform", "translate(0," +height + ")")
             .call(d3.axisBottom(x0));
 
         g.append("g")
